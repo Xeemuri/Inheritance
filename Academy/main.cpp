@@ -2,7 +2,7 @@
 using std::cin;
 using std::cout;
 using std::endl;
-
+#define delimiter "\n---------------------------------------------\n"
 class Human
 {
 	std::string last_name;
@@ -80,7 +80,7 @@ public:
 	}
 
 	//			Methods:
-	void info() const
+	void info() const override
 	{
 		Human::info();
 		cout << speciality << endl;
@@ -135,7 +135,7 @@ public:
 		cout << "SDestructor:\t" << this << endl;
 	}
 	//			Methods:
-	void info() const
+	void info() const override
 	{
 		Academy_member::info();
 		cout << group << " " << rating << " " << attendance << endl;
@@ -144,61 +144,36 @@ public:
 
 class Graduate : public Student
 {
-	std::string thesis_topic;
-	std::string supervisor;
-	double defense_rating;
-
+	std::string subject;
 public:
-	const std::string& get_thesis_topic() const
+	const std::string& get_subject() const
 	{
-		return thesis_topic;
+		return subject;
 	}
-	const std::string& get_supervisor() const
+	void set_subject(const std::string& subject)
 	{
-		return supervisor;
+		this->subject = subject;
 	}
-	double get_defense_rating() const
-	{
-		return defense_rating;
-	}
-
-	void set_thesis_topic(const std::string& thesis_topic)
-	{
-		this->thesis_topic = thesis_topic;
-	}
-	void set_supervisor(const std::string& supervisor)
-	{
-		this->supervisor = supervisor;
-	}
-	void set_defense_rating(double defense_rating)
-	{
-		this->defense_rating = defense_rating;
-	}
-
-	// Constructors:
-	Graduate(
+	//			Constructors:
+	Graduate
+	(
 		const std::string& last_name, const std::string& first_name, int age,
 		const std::string& speciality,
 		const std::string& group, double rating, double attendance,
-		const std::string& thesis_topic, const std::string& supervisor, double defense_rating
-	) : Student(last_name, first_name, age, speciality, group, rating, attendance)
+		const std::string& subject
+	):Student(last_name, first_name, age, speciality,group,rating,attendance)
 	{
-		set_thesis_topic(thesis_topic);
-		set_supervisor(supervisor);
-		set_defense_rating(defense_rating);
+		set_subject(subject);
 		cout << "GConstructor:\t" << this << endl;
 	}
-
 	~Graduate()
 	{
 		cout << "GDestructor:\t" << this << endl;
 	}
-
-	// Methods:
-	void info() const
+	void info() const override
 	{
 		Student::info();
-		cout << thesis_topic << " " << supervisor << " " << defense_rating << endl;
+		cout << subject << endl;
 	}
 };
 class Teacher : public Academy_member
@@ -229,12 +204,14 @@ public:
 		cout << "TDestructor:\t" << this << endl;
 	}
 	//			Methods:
-	void info()
+	void info()const override
 	{
 		Academy_member::info();
 		cout << experience << endl;
 	}
 };
+
+
 
 //#define INHERITANCE
 int main()
@@ -261,14 +238,16 @@ int main()
 		new Teacher("Stanne","Michal",55, "Vocals", 40),
 		new Student("Щербаков", "Илья", 15, "РПО", "P_418", 100, 99.9),
 		new Teacher("Henrikson","Matrin",50,"Bass",40),
-		new Student("Татевосян","Элеонора",17,"РПО", "P_418", 98, 48)
+		new Student("Татевосян","Элеонора",17,"РПО", "P_418", 98, 48),
+		new Graduate("Иванов","Иван", 15,"РПО","001",50,15,"Исследоваие диких бургеров")
 	};
 
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
 	{
+		/*cout << *group[i] << endl;*/
 		group[i]->info();
+		cout << delimiter << endl;
+
 	}
-	Graduate graduate("Щербаков", "Илья", 15, "РПО", "P_418", 100, 99.9, "тема", "руководитель", 95);
-	graduate.info();
 	return 0;
 }
