@@ -142,6 +142,65 @@ public:
 	}
 };
 
+class Graduate : public Student
+{
+	std::string thesis_topic;
+	std::string supervisor;
+	double defense_rating;
+
+public:
+	const std::string& get_thesis_topic() const
+	{
+		return thesis_topic;
+	}
+	const std::string& get_supervisor() const
+	{
+		return supervisor;
+	}
+	double get_defense_rating() const
+	{
+		return defense_rating;
+	}
+
+	void set_thesis_topic(const std::string& thesis_topic)
+	{
+		this->thesis_topic = thesis_topic;
+	}
+	void set_supervisor(const std::string& supervisor)
+	{
+		this->supervisor = supervisor;
+	}
+	void set_defense_rating(double defense_rating)
+	{
+		this->defense_rating = defense_rating;
+	}
+
+	// Constructors:
+	Graduate(
+		const std::string& last_name, const std::string& first_name, int age,
+		const std::string& speciality,
+		const std::string& group, double rating, double attendance,
+		const std::string& thesis_topic, const std::string& supervisor, double defense_rating
+	) : Student(last_name, first_name, age, speciality, group, rating, attendance)
+	{
+		set_thesis_topic(thesis_topic);
+		set_supervisor(supervisor);
+		set_defense_rating(defense_rating);
+		cout << "GConstructor:\t" << this << endl;
+	}
+
+	~Graduate()
+	{
+		cout << "GDestructor:\t" << this << endl;
+	}
+
+	// Methods:
+	void info() const
+	{
+		Student::info();
+		cout << thesis_topic << " " << supervisor << " " << defense_rating << endl;
+	}
+};
 class Teacher : public Academy_member
 {
 	int experience;
@@ -209,5 +268,7 @@ int main()
 	{
 		group[i]->info();
 	}
+	Graduate graduate("Щербаков", "Илья", 15, "РПО", "P_418", 100, 99.9, "тема", "руководитель", 95);
+	graduate.info();
 	return 0;
 }
