@@ -42,6 +42,13 @@ public:
 		set_age(age);
 		cout << "HConstructor:\t" << this << endl;
 	}
+	Human(const Human& other)
+	{
+		this->last_name = other.last_name;
+		this->first_name = other.first_name;
+		this->age = other.age;
+		cout << "HCopyConstructor: " << this << endl;
+	}
 	~Human()
 	{
 		cout << "HDestructor:\t" << this << endl;
@@ -51,6 +58,11 @@ public:
 		cout << last_name << " " << first_name << " " << age << endl;
 	}
 };
+
+std::ostream& operator <<(std::ostream& os, const Human& obj)
+{
+	return os << obj.get_last_name() << obj.get_first_name() << obj.get_age();
+}
 
 class Academy_member: public Human
 {
@@ -86,6 +98,11 @@ public:
 		cout << speciality << endl;
 	}
 };
+
+std::ostream& operator <<(std::ostream& os, const Academy_member& obj)
+{
+	return os << (Human&)obj << " " << obj.get_speciality();
+}
 
 class Student : public Academy_member
 {
@@ -141,6 +158,10 @@ public:
 		cout << group << " " << rating << " " << attendance << endl;
 	}
 };
+std::ostream& operator <<(std::ostream& os, const Student& obj)
+{
+	return os << (Academy_member&)obj << obj.get_group()<< " " << obj.get_rating() << " " << obj.get_attendance();
+}
 
 class Graduate : public Student
 {
@@ -176,6 +197,11 @@ public:
 		cout << subject << endl;
 	}
 };
+
+std::ostream& operator <<(std::ostream& os, const Graduate& obj)
+{
+	return os << obj.get_subject();
+}
 class Teacher : public Academy_member
 {
 	int experience;
@@ -211,6 +237,10 @@ public:
 	}
 };
 
+std::ostream& operator <<(std::ostream& os, const Teacher& obj)
+{
+	return os << obj.get_experience();
+}
 
 
 //#define INHERITANCE
@@ -245,9 +275,9 @@ int main()
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
 	{
 		/*cout << *group[i] << endl;*/
-		group[i]->info();
+		//group[i]->info();
 		cout << delimiter << endl;
-
+		cout << *dynamic_cast<Academy_member*>(group[i]) << endl;
 	}
 	return 0;
 }
