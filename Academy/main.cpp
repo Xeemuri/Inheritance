@@ -61,7 +61,7 @@ public:
 
 std::ostream& operator <<(std::ostream& os, const Human& obj)
 {
-	return os << obj.get_last_name() << obj.get_first_name() << obj.get_age();
+	return os << obj.get_last_name() << " " << obj.get_first_name() << " " << obj.get_age();
 }
 
 class Academy_member: public Human
@@ -200,7 +200,7 @@ public:
 
 std::ostream& operator <<(std::ostream& os, const Graduate& obj)
 {
-	return os << obj.get_subject();
+	return os << (Student&)obj << obj.get_subject();
 }
 class Teacher : public Academy_member
 {
@@ -239,7 +239,7 @@ public:
 
 std::ostream& operator <<(std::ostream& os, const Teacher& obj)
 {
-	return os << obj.get_experience();
+	return os << (Academy_member&)obj << " " <<  obj.get_experience();
 }
 
 
@@ -274,10 +274,15 @@ int main()
 
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
 	{
-		/*cout << *group[i] << endl;*/
+		//cout << *group[i] << endl;
 		//group[i]->info();
 		cout << delimiter << endl;
-		cout << *dynamic_cast<Academy_member*>(group[i]) << endl;
+		//cout << *dynamic_cast<Academy_member*>(group[i]) << endl;
+		cout << typeid(*group[i]).name() << ":\t";
+		if (typeid(*group[i]) == typeid(Student)) cout << *dynamic_cast<Student*>(group[i]) << endl;
+		if (typeid(*group[i]) == typeid(Teacher)) cout << *dynamic_cast<Teacher*>(group[i]) << endl;
+		if (typeid(*group[i]) == typeid(Graduate)) cout << *dynamic_cast<Graduate*>(group[i]) << endl;
 	}
+	5; // Числовая константа типа инт
 	return 0;
 }
