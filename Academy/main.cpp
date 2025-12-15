@@ -5,11 +5,19 @@ using std::endl;
 #define delimiter "\n---------------------------------------------\n"
 class Human
 {
+	static const int LAST_NAME_WIDTH = 12;
+	static const int FIRST_NAME_WIDTH = 12;
+	static const int AGE_WIDTH= 3;
+	static int count;
 	std::string last_name;
 	std::string first_name;
 	int age;
 
 public:
+	static int get_count()
+	{
+		return count;
+	}
 	const std::string& get_last_name() const
 	{
 		return last_name;
@@ -40,17 +48,28 @@ public:
 		set_last_name(last_name);
 		set_first_name(first_name);
 		set_age(age);
+		count++;
 		cout << "HConstructor:\t" << this << endl;
 	}
 	~Human()
 	{
+		count--;
 		cout << "HDestructor:\t" << this << endl;
 	}
 	virtual std::ostream& info(std::ostream& os) const
 	{
-		return os << last_name << " " << first_name << " " << age;
+		os.width(LAST_NAME_WIDTH); //задаем ширину вывода, т.е., сколько знакопозиций будет занимать выводимое значение
+		os << std::left;//задаем выравнивание по левому краю
+		os << last_name;
+		os.width(FIRST_NAME_WIDTH);
+		os << first_name;
+		os.width(AGE_WIDTH);
+		os << age;
+		return os;
+		//return os << last_name << " " << first_name << " " << age;
 	}
 };
+int Human::count = 0;
 
 std::ostream& operator<<(std::ostream& os, const Human& obj)
 {
@@ -59,6 +78,7 @@ std::ostream& operator<<(std::ostream& os, const Human& obj)
 }
 class Academy_member: public Human
 {
+	static const int SPECIALITY_WIDTH = 16;
 	std::string speciality;
 public:
 	const std::string& get_speciality() const
@@ -87,7 +107,11 @@ public:
 	//			Methods:
 	std::ostream& info(std::ostream& os) const override
 	{
-		return Human::info(os) << " "<<speciality;
+		Human::info(os);
+		os.width(SPECIALITY_WIDTH);
+		os << speciality;
+		return os;
+		//return Human::info(os) << " "<<speciality;
 		//Human::info(os);
 		//return os << speciality << endl;
 
@@ -96,6 +120,9 @@ public:
 
 class Student : public Academy_member
 {
+	static const int GROUP_WIDTH = 8;
+	static const int ATTENDANCE_WIDTH = 8;
+	static const int RATING_WIDTH= 8;
 	std::string group;
 	double rating;
 	double attendance;
@@ -144,7 +171,15 @@ public:
 	//			Methods:
 	std::ostream& info(std::ostream& os) const override
 	{
-		return Academy_member::info(os) << " " << group << " " << rating << " " << attendance;
+		Academy_member::info(os);
+		os.width(GROUP_WIDTH);
+		os << group;
+		os.width(RATING_WIDTH);
+		os << rating;
+		os.width(ATTENDANCE_WIDTH);
+		os << attendance;
+		return os;
+		//return Academy_member::info(os) << " " << group << " " << rating << " " << attendance;
 		//Academy_member::info(os);
 		//return os << group << " " << rating << " " << attendance << endl;
 	}
@@ -180,7 +215,7 @@ public:
 	}
 	std::ostream& info(std::ostream& os) const override
 	{
-		return Student::info(os) << " " << subject;
+		return Student::info(os) << subject;
 		//Student::info(os);
 		//return os << subject << endl;
 	}
@@ -215,7 +250,7 @@ public:
 	//			Methods:
 	std::ostream& info(std::ostream& os) const override
 	{
-		return Academy_member::info(os) << " " << experience;
+		return Academy_member::info(os)  << experience;
 		//Academy_member::info(os);
 		//return os<< experience << endl;
 	}
@@ -258,5 +293,7 @@ int main()
 		//group[i]->info();
 		//cout << delimiter << endl;
 	}
+	cout << "Количесто участников группы: " << Human::get_count();
+
 	return 0;
 }
