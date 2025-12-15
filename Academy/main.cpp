@@ -48,7 +48,7 @@ public:
 	}
 	virtual std::ostream& info(std::ostream& os) const
 	{
-		return os << last_name << " " << first_name << " " << age << endl;
+		return os << last_name << " " << first_name << " " << age;
 	}
 };
 
@@ -87,8 +87,10 @@ public:
 	//			Methods:
 	std::ostream& info(std::ostream& os) const override
 	{
-		Human::info(os);
-		return os << speciality << endl;
+		return Human::info(os) << " "<<speciality;
+		//Human::info(os);
+		//return os << speciality << endl;
+
 	}
 };
 
@@ -142,8 +144,9 @@ public:
 	//			Methods:
 	std::ostream& info(std::ostream& os) const override
 	{
-		Academy_member::info(os);
-		return os << group << " " << rating << " " << attendance << endl;
+		return Academy_member::info(os) << " " << group << " " << rating << " " << attendance;
+		//Academy_member::info(os);
+		//return os << group << " " << rating << " " << attendance << endl;
 	}
 };
 
@@ -177,8 +180,9 @@ public:
 	}
 	std::ostream& info(std::ostream& os) const override
 	{
-		Student::info(os);
-		return os << subject << endl;
+		return Student::info(os) << " " << subject;
+		//Student::info(os);
+		//return os << subject << endl;
 	}
 };
 class Teacher : public Academy_member
@@ -211,8 +215,9 @@ public:
 	//			Methods:
 	std::ostream& info(std::ostream& os) const override
 	{
-		Academy_member::info(os);
-		return os<< experience << endl;
+		return Academy_member::info(os) << " " << experience;
+		//Academy_member::info(os);
+		//return os<< experience << endl;
 	}
 };
 
@@ -251,7 +256,7 @@ int main()
 	{
 		cout << *group[i] << endl;
 		//group[i]->info();
-		cout << delimiter << endl;
+		//cout << delimiter << endl;
 	}
 	return 0;
 }
