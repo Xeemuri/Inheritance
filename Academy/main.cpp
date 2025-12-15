@@ -46,16 +46,16 @@ public:
 	{
 		cout << "HDestructor:\t" << this << endl;
 	}
-	virtual void info() const
+	virtual std::ostream& info(std::ostream& os) const
 	{
-		cout << last_name << " " << first_name << " " << age << endl;
+		return os << last_name << " " << first_name << " " << age << endl;
 	}
 };
 
 std::ostream& operator<<(std::ostream& os, const Human& obj)
 {
-	obj.info();
-	return os;
+	//obj.info();
+	return obj.info(os);
 }
 class Academy_member: public Human
 {
@@ -85,10 +85,10 @@ public:
 	}
 
 	//			Methods:
-	void info() const override
+	std::ostream& info(std::ostream& os) const override
 	{
-		Human::info();
-		cout << speciality << endl;
+		Human::info(os);
+		return os << speciality << endl;
 	}
 };
 
@@ -140,10 +140,10 @@ public:
 		cout << "SDestructor:\t" << this << endl;
 	}
 	//			Methods:
-	void info() const override
+	std::ostream& info(std::ostream& os) const override
 	{
-		Academy_member::info();
-		cout << group << " " << rating << " " << attendance << endl;
+		Academy_member::info(os);
+		return os << group << " " << rating << " " << attendance << endl;
 	}
 };
 
@@ -175,10 +175,10 @@ public:
 	{
 		cout << "GDestructor:\t" << this << endl;
 	}
-	void info() const override
+	std::ostream& info(std::ostream& os) const override
 	{
-		Student::info();
-		cout << subject << endl;
+		Student::info(os);
+		return os << subject << endl;
 	}
 };
 class Teacher : public Academy_member
@@ -209,10 +209,10 @@ public:
 		cout << "TDestructor:\t" << this << endl;
 	}
 	//			Methods:
-	void info()const override
+	std::ostream& info(std::ostream& os) const override
 	{
-		Academy_member::info();
-		cout << experience << endl;
+		Academy_member::info(os);
+		return os<< experience << endl;
 	}
 };
 
@@ -244,7 +244,7 @@ int main()
 		new Student("Щербаков", "Илья", 15, "РПО", "P_418", 100, 99.9),
 		new Teacher("Henrikson","Matrin",50,"Bass",40),
 		new Student("Татевосян","Элеонора",17,"РПО", "P_418", 98, 48),
-		new Graduate("Иванов","Иван", 100,"РПО","001",50,15,"Исследоваие чего-то там")
+		new Graduate("Иванов","Иван", 100,"РПО","001",10,0,"Исследоваие чего-то там")
 	};
 
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
