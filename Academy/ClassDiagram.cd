@@ -11,14 +11,14 @@
       <FileName>main.cpp</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Academy_member" Collapsed="true">
+  <Class Name="Graduate" Collapsed="true">
     <Position X="1.75" Y="1.75" Width="1.5" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />
       <Compartment Name="Methods" Collapsed="true" />
     </Compartments>
     <TypeIdentifier>
-      <HashCode>AAIAAAAAAAAAAAAAAAAgAAAAAAAAAAAAQAAEAQAAAAA=</HashCode>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAACAACAAAAAAQAAAAAAIIAA=</HashCode>
       <FileName>main.cpp</FileName>
     </TypeIdentifier>
   </Class>

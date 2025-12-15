@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 using std::cin;
 using std::cout;
 using std::endl;
@@ -52,6 +52,11 @@ public:
 	}
 };
 
+std::ostream& operator<<(std::ostream& os, const Human& obj)
+{
+	obj.info();
+	return os;
+}
 class Academy_member: public Human
 {
 	std::string speciality;
@@ -225,7 +230,7 @@ int main()
 	Academy_member albert("Einstein", "Albert", 146, "Astronomy");
 	albert.info();
 
-	Student student("Ùåðáàêîâ", "Èëüÿ", 15, "ÐÏÎ", "P_418", 100, 99.9);
+	Student student("Ð©ÐµÑ€Ð±Ð°ÐºÐ¾Ð²", "Ð˜Ð»ÑŒÑ", 15, "Ð ÐŸÐž", "P_418", 100, 99.9);
 	student.info();
 
 	Teacher teacher("Einstein", "Albert", 146, "Astronomy", 120);
@@ -234,20 +239,19 @@ int main()
 
 	Human* group[] =
 	{
-		new Student("Êîíäðàòåíêî","Ãåîðãèé",18,"ÐÏÎ","P_418",97,98),
+		new Student("ÐšÐ¾Ð½Ð´Ñ€Ð°Ñ‚ÐµÐ½ÐºÐ¾","Ð“ÐµÐ¾Ñ€Ð³Ð¸Ð¹",18,"Ð ÐŸÐž","P_418",97,98),
 		new Teacher("Stanne","Michal",55, "Vocals", 40),
-		new Student("Ùåðáàêîâ", "Èëüÿ", 15, "ÐÏÎ", "P_418", 100, 99.9),
+		new Student("Ð©ÐµÑ€Ð±Ð°ÐºÐ¾Ð²", "Ð˜Ð»ÑŒÑ", 15, "Ð ÐŸÐž", "P_418", 100, 99.9),
 		new Teacher("Henrikson","Matrin",50,"Bass",40),
-		new Student("Òàòåâîñÿí","Ýëåîíîðà",17,"ÐÏÎ", "P_418", 98, 48),
-		new Graduate("Èâàíîâ","Èâàí", 15,"ÐÏÎ","001",50,15,"Èññëåäîâàèå äèêèõ áóðãåðîâ")
+		new Student("Ð¢Ð°Ñ‚ÐµÐ²Ð¾ÑÑÐ½","Ð­Ð»ÐµÐ¾Ð½Ð¾Ñ€Ð°",17,"Ð ÐŸÐž", "P_418", 98, 48),
+		new Graduate("Ð˜Ð²Ð°Ð½Ð¾Ð²","Ð˜Ð²Ð°Ð½", 100,"Ð ÐŸÐž","001",50,15,"Ð˜ÑÑÐ»ÐµÐ´Ð¾Ð²Ð°Ð¸Ðµ Ñ‡ÐµÐ³Ð¾-Ñ‚Ð¾ Ñ‚Ð°Ð¼")
 	};
 
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
 	{
-		/*cout << *group[i] << endl;*/
-		group[i]->info();
+		cout << *group[i] << endl;
+		//group[i]->info();
 		cout << delimiter << endl;
-
 	}
 	return 0;
 }
