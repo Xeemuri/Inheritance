@@ -34,7 +34,7 @@ void main()
 	}
 	fin.close();
 	fout_wol.close();
-#endif // WOL
+
 	std::ifstream fin("201 RAW.txt");
 	std::ofstream fout("201.dhcpd");
 	fin.close();

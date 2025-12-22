@@ -51,7 +51,7 @@ public:
 		count++;
 		cout << "HConstructor:\t" << this << endl;
 	}
-	~Human()
+	virtual ~Human()
 	{
 		count--;
 		cout << "HDestructor:\t" << this << endl;
@@ -284,7 +284,7 @@ int main()
 		new Student("Щербаков", "Илья", 15, "РПО", "P_418", 100, 99.9),
 		new Teacher("Henrikson","Matrin",50,"Bass",40),
 		new Student("Татевосян","Элеонора",17,"РПО", "P_418", 98, 48),
-		new Graduate("Иванов","Иван", 100,"РПО","001",10,0,"Исследоваие чего-то там")
+		new Graduate("Иванов","Иван", 100,"РПО","001",10,0,"Исследование чего-то там")
 	};
 
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
@@ -292,6 +292,10 @@ int main()
 		cout << *group[i] << endl;
 		//group[i]->info();
 		//cout << delimiter << endl;
+	}
+	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
+	{
+		delete group[i];
 	}
 	cout << "Количесто участников группы: " << Human::get_count();
 
