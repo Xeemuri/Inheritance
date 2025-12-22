@@ -301,7 +301,7 @@ int main()
 		//group[i]->info();
 		//cout << delimiter << endl;
 	}
-	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
+	while (!fin.eof())
 	{
 		fin.getline(group_member, 65);
 		cout << group_member << endl;
