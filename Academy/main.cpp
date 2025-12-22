@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <fstream>
 using std::cin;
 using std::cout;
 using std::endl;
@@ -276,20 +277,27 @@ int main()
 	Teacher teacher("Einstein", "Albert", 146, "Astronomy", 120);
 	teacher.info();
 #endif // INHERITANCE
-
+	std::ifstream fin("Group.txt");
+	std::ofstream fout("Group.txt");
 	Human* group[] =
 	{
 		new Student("Кондратенко","Георгий",18,"РПО","P_418",97,98),
-		new Teacher("Stanne","Michal",55, "Vocals", 40),
 		new Student("Щербаков", "Илья", 15, "РПО", "P_418", 100, 99.9),
-		new Teacher("Henrikson","Matrin",50,"Bass",40),
 		new Student("Татевосян","Элеонора",17,"РПО", "P_418", 98, 48),
-		new Graduate("Иванов","Иван", 100,"РПО","001",10,0,"Исследоваие чего-то там")
+		new Student("Плехов","Данил",15,"РПО", "P_418", 100, 100),
+		new Student("Дидиченко","Алексей",17,"РПО", "P_418", 95, 75),
+		new Student("Астапов","Артём",15,"РПО", "P_418", 97, 80),
+		new Student("Федорченко","Артём",17,"РПО", "P_418", 80, 80),
+		new Student("Пензин","Богдан",15,"РПО", "P_418", 98, 90),
+		new Student("Соломахин","Всеволод",15,"РПО", "P_418", 98, 48),
+		new Student("Чабаненко","Егор",15,"РПО", "P_418", 98, 48),
+		new Student("Сидоров","Кирилл",16,"РПО", "P_418", 98, 48),
 	};
 
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
 	{
-		cout << *group[i] << endl;
+		fout << *group[i] << endl;
+		//fin >> *group[i];
 		//group[i]->info();
 		//cout << delimiter << endl;
 	}
