@@ -12,9 +12,9 @@ void main()
 	const int SIZE = 20;
 	char ip_buffer[SIZE] = {};
 	char mac_buffer[SIZE] = {};
-	int cnt = 1;
 	if (fin.is_open())
 	{
+		int cnt = 1;	
 		while (!fin.eof())
 		{
 			fin >> ip_buffer;
@@ -34,4 +34,5 @@ void main()
 	}
 	fin.close();
 	fout_wol.close();
+	fout_dhcpd.close();
 }

@@ -290,16 +290,21 @@ int main()
 		new Student("Федорченко","Артём",17,"РПО", "P_418", 80, 80),
 		new Student("Пензин","Богдан",15,"РПО", "P_418", 98, 90),
 		new Student("Соломахин","Всеволод",15,"РПО", "P_418", 98, 48),
-		new Student("Чабаненко","Егор",15,"РПО", "P_418", 98, 48),
-		new Student("Сидоров","Кирилл",16,"РПО", "P_418", 98, 48),
+		new Student("Чабаненко","Егор",15,"РПО", "P_418", 75, 84),
+		new Student("Сидоров","Кирилл",16,"РПО", "P_418", 70, 50),
 	};
-
+	char group_member[65] = {};
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
 	{
 		fout << *group[i] << endl;
 		//fin >> *group[i];
 		//group[i]->info();
 		//cout << delimiter << endl;
+	}
+	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
+	{
+		fin.getline(group_member, 65);
+		cout << group_member << endl;
 	}
 	cout << "Количесто участников группы: " << Human::get_count();
 
