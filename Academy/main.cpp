@@ -293,7 +293,8 @@ int main()
 		new Student("Чабаненко","Егор",15,"РПО", "P_418", 75, 84),
 		new Student("Сидоров","Кирилл",16,"РПО", "P_418", 70, 50),
 	};
-	char group_member[65] = {};
+	const int SIZE = 68;
+	char group_member[SIZE] = {};
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
 	{
 		fout << *group[i] << endl;
@@ -301,12 +302,16 @@ int main()
 		//group[i]->info();
 		//cout << delimiter << endl;
 	}
-	while (!fin.eof())
+	if (fin.is_open())
 	{
-		fin.getline(group_member, 65);
-		cout << group_member << endl;
+		while (!fin.eof())
+		{
+			fin.getline(group_member, SIZE);
+			cout << group_member << endl;
+		}
 	}
 	cout << "Количесто участников группы: " << Human::get_count();
+	
 
 	return 0;
 }
