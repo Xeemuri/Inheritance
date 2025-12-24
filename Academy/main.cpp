@@ -1,4 +1,6 @@
 ﻿#include <iostream>
+#include <fstream>
+#include <string>
 using std::cin;
 using std::cout;
 using std::endl;
@@ -256,7 +258,15 @@ public:
 	}
 };
 
-
+void Print(Human* group[],const int n)
+{
+	for (int i = 0; i < n; i++)
+	{
+		cout << *group[i] << endl;
+		//group[i]->info();
+		//cout << delimiter << endl;
+	}
+}
 
 //#define INHERITANCE
 int main()
@@ -287,12 +297,14 @@ int main()
 		new Graduate("Иванов","Иван", 100,"РПО","001",10,0,"Исследование чего-то там")
 	};
 
-	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
+	Print(group, sizeof(group) / sizeof(group[0]));
+	std::ofstream fout("group.txt");
+	for (int i = 0; i < sizeof(group) / sizeof(group[i]); i++)
 	{
-		cout << *group[i] << endl;
-		//group[i]->info();
-		//cout << delimiter << endl;
+		fout << *group[i] << endl;
 	}
+	fout.close();
+	system("notepad group.txt");
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
 	{
 		delete group[i];
