@@ -60,8 +60,10 @@ public:
 	}
 	virtual std::ostream& info(std::ostream& os) const
 	{
-		os.width(LAST_NAME_WIDTH); //задаем ширину вывода, т.е., сколько знакопозиций будет занимать выводимое значение
+		os.width(11);
 		os << std::left;//задаем выравнивание по левому краю
+		os << std::string(typeid(*this).name()+6)<<":";
+		os.width(LAST_NAME_WIDTH); //задаем ширину вывода, т.е., сколько знакопозиций будет занимать выводимое значение
 		os << last_name;
 		os.width(FIRST_NAME_WIDTH);
 		os << first_name;
@@ -70,6 +72,12 @@ public:
 		return os;
 		//return os << last_name << " " << first_name << " " << age;
 	}
+	virtual std::ofstream& write(std::ofstream& ofs) const
+	{
+		ofs << typeid(*this).name()+6 << ":";
+		ofs << last_name << " " << first_name << " " << age;
+		return ofs;
+	}
 };
 int Human::count = 0;
 
@@ -77,6 +85,12 @@ std::ostream& operator<<(std::ostream& os, const Human& obj)
 {
 	//obj.info();
 	return obj.info(os);
+}
+
+std::ofstream& operator <<(std::ofstream& ofs, const Human& obj)
+{
+	obj.write(ofs);
+	return ofs;
 }
 class Academy_member: public Human
 {
@@ -117,6 +131,12 @@ public:
 		//Human::info(os);
 		//return os << speciality << endl;
 
+	}
+	virtual std::ofstream& write(std::ofstream& ofs) const override
+	{
+		Human::write(ofs);
+		ofs << " " << speciality;
+		return ofs;
 	}
 };
 
@@ -185,6 +205,12 @@ public:
 		//Academy_member::info(os);
 		//return os << group << " " << rating << " " << attendance << endl;
 	}
+	virtual std::ofstream& write(std::ofstream& ofs) const
+	{
+		Academy_member::write(ofs);
+		ofs << " " << group <<" " << rating << " " << attendance;
+		return ofs;
+	}
 };
 
 class Graduate : public Student
@@ -221,6 +247,12 @@ public:
 		//Student::info(os);
 		//return os << subject << endl;
 	}
+	virtual std::ofstream& write(std::ofstream& ofs) const
+	{
+		Student::write(ofs);
+		ofs << " " << subject;
+		return ofs;
+	}
 };
 class Teacher : public Academy_member
 {
@@ -256,6 +288,12 @@ public:
 		//Academy_member::info(os);
 		//return os<< experience << endl;
 	}
+	virtual std::ofstream& write(std::ofstream& ofs) const
+	{
+		Academy_member::write(ofs);
+		ofs << " " << experience;
+		return ofs;
+	}
 };
 
 void Print(Human* group[],const int n)
@@ -268,7 +306,69 @@ void Print(Human* group[],const int n)
 	}
 }
 
+void Save(Human* group[], const int n, const std::string& filename)
+{
+	std::ofstream fout(filename);
+	for (int i = 0; i < n; i++)
+	{
+		fout << *group[i] << endl;
+	}
+	fout.close();
+	std::string cmd = "notepad ";
+	cmd += filename;
+	system(cmd.c_str());
+}
+
+Human* Factory(const char type[] )
+{
+	Human* human = nullptr;
+	if (strstr(type, "Student")) human = new Student("","",0,"","",0,0);
+	if (strstr(type, "Graduate")) human = new Graduate("","",0,"","",0,0,"");
+	if (strstr(type, "Teacher")) human = new Teacher("","",0,"",0);
+	return human;
+}
+Human** Load(const std::string& filename, int& n)
+{
+	Human** group = nullptr;
+	std::ifstream fin(filename);
+	if (fin.is_open())
+	{
+		//1) Вычисляем количество объектов в файле
+		n = 0; // Обнуляем размер массива
+		std::string buffer;
+		while(!fin.eof())
+		{
+			std::getline(fin, buffer);
+			if (buffer.size() == 0)continue;
+			n++;
+		}
+		cout << n << endl;
+		//2) Выделяем память под массив, в который будут сохранятся объекты из файла
+		group = new Human* [0] {};
+
+		//3) Возвращаемся в начало файлы, для того чтобы загрузить из него сами объекты
+		cout << fin.tellg() << endl;
+		fin.clear();
+		fin.seekg(0);
+		cout << fin.tellg() << endl;
+
+		//4) Загружаем объекты из файла
+		for (int i = 0; !fin.eof(); i++) 
+		{
+			std::getline(fin, buffer, ':');
+			if (buffer.size() == 0)continue;
+			group[i] = Factory(buffer.c_str());
+		}
+	}
+	else
+	{
+		std::cerr << "File not found" << endl;
+	}
+	fin.close();
+	return group;
+}
 //#define INHERITANCE
+//#define POLYMROPHISM
 int main()
 {
 	setlocale(LC_ALL, "");
@@ -287,29 +387,28 @@ int main()
 	teacher.info();
 #endif // INHERITANCE
 
+#ifdef POLYMROPHISM
 	Human* group[] =
 	{
 		new Student("Кондратенко","Георгий",18,"РПО","P_418",97,98),
 		new Teacher("Stanne","Michal",55, "Vocals", 40),
 		new Student("Щербаков", "Илья", 15, "РПО", "P_418", 100, 99.9),
-		new Teacher("Henrikson","Matrin",50,"Bass",40),
+		new Teacher("Henrikson","Matrin",50,"Bass guitar",40),
 		new Student("Татевосян","Элеонора",17,"РПО", "P_418", 98, 48),
-		new Graduate("Иванов","Иван", 100,"РПО","001",10,0,"Исследование чего-то там")
+		new Graduate("Иванов","Иван", 100,"РПО","P_1488",10,0,"Исследование чего-то там")
 	};
 
-	Print(group, sizeof(group) / sizeof(group[0]));
-	std::ofstream fout("group.txt");
-	for (int i = 0; i < sizeof(group) / sizeof(group[i]); i++)
-	{
-		fout << *group[i] << endl;
-	}
-	fout.close();
-	system("notepad group.txt");
+	Save(group, sizeof(group) / sizeof(group[0]), "P_418.txt");
+
+
 	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
 	{
 		delete group[i];
 	}
 	cout << "Количесто участников группы: " << Human::get_count();
-
+#endif // POLYMROPHISM
+	int n = 0;
+	Human** group = Load("P_418.txt", n);
+	Print(group, n);
 	return 0;
 }
