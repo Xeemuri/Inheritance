@@ -62,7 +62,7 @@ public:
 	{
 		os.width(11);
 		os << std::left;//задаем выравнивание по левому краю
-		os << std::string(typeid(*this).name()+6)<<":";
+		os << std::string(typeid(*this).name()+6)+":";
 		os.width(LAST_NAME_WIDTH); //задаем ширину вывода, т.е., сколько знакопозиций будет занимать выводимое значение
 		os << last_name;
 		os.width(FIRST_NAME_WIDTH);
@@ -78,6 +78,11 @@ public:
 		ofs << last_name << " " << first_name << " " << age;
 		return ofs;
 	}
+	virtual std::ifstream& read(std::ifstream& ifs) 
+	{
+		ifs >> last_name >> first_name >> age;
+		return ifs;
+	}
 };
 int Human::count = 0;
 
@@ -92,6 +97,13 @@ std::ofstream& operator <<(std::ofstream& ofs, const Human& obj)
 	obj.write(ofs);
 	return ofs;
 }
+
+std::ifstream& operator>>(std::ifstream& ifs, Human& obj)
+{
+	obj.read(ifs);
+	return ifs;
+}
+
 class Academy_member: public Human
 {
 	static const int SPECIALITY_WIDTH = 16;
@@ -137,6 +149,18 @@ public:
 		Human::write(ofs);
 		ofs << " " << speciality;
 		return ofs;
+	}
+	std::ifstream& read(std::ifstream& ifs)override
+	{
+		Human::read(ifs);
+		char buffer[SPECIALITY_WIDTH + 1] = {};
+		ifs.read(buffer, SPECIALITY_WIDTH);
+		cout << buffer << endl;
+		for (int i = SPECIALITY_WIDTH - 2; buffer[i] == ' '; i--)buffer[i] = 0;
+		while (buffer[0] == ' ')
+			for (int i = 0; buffer[i]; i++)buffer[i] = buffer[i + 1];
+		this->speciality = buffer;
+		return ifs;
 	}
 };
 
@@ -205,11 +229,17 @@ public:
 		//Academy_member::info(os);
 		//return os << group << " " << rating << " " << attendance << endl;
 	}
-	virtual std::ofstream& write(std::ofstream& ofs) const
+	std::ofstream& write(std::ofstream& ofs) const override
 	{
 		Academy_member::write(ofs);
 		ofs << " " << group <<" " << rating << " " << attendance;
 		return ofs;
+	}
+	std::ifstream& read(std::ifstream& ifs)override
+	{
+		Academy_member::read(ifs);
+		ifs >> group >> rating >> attendance;
+		return ifs;
 	}
 };
 
@@ -247,11 +277,18 @@ public:
 		//Student::info(os);
 		//return os << subject << endl;
 	}
-	virtual std::ofstream& write(std::ofstream& ofs) const
+	std::ofstream& write(std::ofstream& ofs) const override
 	{
 		Student::write(ofs);
 		ofs << " " << subject;
 		return ofs;
+	}
+
+	std::ifstream& read(std::ifstream& ifs) override
+	{
+		Student::read(ifs);
+		std::getline(ifs, subject);
+		return ifs;
 	}
 };
 class Teacher : public Academy_member
@@ -288,11 +325,17 @@ public:
 		//Academy_member::info(os);
 		//return os<< experience << endl;
 	}
-	virtual std::ofstream& write(std::ofstream& ofs) const
+	std::ofstream& write(std::ofstream& ofs) const override
 	{
 		Academy_member::write(ofs);
 		ofs << " " << experience;
 		return ofs;
+	}
+	std::ifstream& read(std::ifstream& ifs) override
+	{
+		Academy_member::read(ifs);
+		ifs >> experience;
+		return ifs;
 	}
 };
 
@@ -346,7 +389,7 @@ Human** Load(const std::string& filename, int& n)
 		//2) Выделяем память под массив, в который будут сохранятся объекты из файла
 		group = new Human* [0] {};
 
-		//3) Возвращаемся в начало файлы, для того чтобы загрузить из него сами объекты
+		//3) Возвращаемся в начало файла, для того чтобы загрузить из него сами объекты
 		cout << fin.tellg() << endl;
 		fin.clear();
 		fin.seekg(0);
@@ -358,6 +401,10 @@ Human** Load(const std::string& filename, int& n)
 			std::getline(fin, buffer, ':');
 			if (buffer.size() == 0)continue;
 			group[i] = Factory(buffer.c_str());
+
+			if (group[i])fin >> *group[i];
+			else i--;
+			cout << fin.tellg() << endl;
 		}
 	}
 	else
