@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 using namespace std;
 
 
@@ -50,12 +50,12 @@ public:
 	
 	void printPrimary() const override
 	{
-		cout << "Äëèíà ñòîðîíû: " << side << endl;
+		cout << "Ð”Ð»Ð¸Ð½Ð° ÑÑ‚Ð¾Ñ€Ð¾Ð½Ñ‹: " << side << endl;
 	}
 	void printSecondary() const override
 	{
-		cout << "Ïëîùàäü: " << area() << endl;
-		cout << "Ïåðèìåòð: " << perimeter() << endl;
+		cout << "ÐŸÐ»Ð¾Ñ‰Ð°Ð´ÑŒ: " << area() << endl;
+		cout << "ÐŸÐµÑ€Ð¸Ð¼ÐµÑ‚Ñ€: " << perimeter() << endl;
 	}
 };
 
@@ -92,13 +92,13 @@ public:
 
 	void printPrimary() const override
 	{
-		cout << "Äëèía: " << height << endl;
-		cout << "Øèðèíà: " << width << endl;
+		cout << "Ð”Ð»Ð¸Ð½a: " << height << endl;
+		cout << "Ð¨Ð¸Ñ€Ð¸Ð½Ð°: " << width << endl;
 	}
 	void printSecondary() const override
 	{
-		cout << "Ïëîùàäü: " << area() << endl;
-		cout << "Ïåðèìåòð: " << perimeter() << endl;
+		cout << "ÐŸÐ»Ð¾Ñ‰Ð°Ð´ÑŒ: " << area() << endl;
+		cout << "ÐŸÐµÑ€Ð¸Ð¼ÐµÑ‚Ñ€: " << perimeter() << endl;
 	}
 
 	void draw() const override
@@ -116,13 +116,13 @@ public:
 int main()
 {
 	setlocale(LC_ALL, "");
-	//Êâàäðàò
+	//ÐšÐ²Ð°Ð´Ñ€Ð°Ñ‚
 	/*Square square = 5;
 	square.draw();
 	square.printPrimary();
 	square.printSecondary();*/
 
-	//Ïðÿìîóãîëüíèê
+	//ÐŸÑ€ÑÐ¼Ð¾ÑƒÐ³Ð¾Ð»ÑŒÐ½Ð¸Ðº
 	Rectangle rect(3, 5);
 	rect.draw();
 	rect.printPrimary();

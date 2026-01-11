@@ -1,22 +1,22 @@
-#include <iostream>
+п»ї#include <iostream>
 using namespace std;
 
 
-class Vehicle		//Транспортное средство
+class Vehicle		//РўСЂР°РЅСЃРїРѕСЂС‚РЅРѕРµ СЃСЂРµРґСЃС‚РІРѕ
 {
-	int speed;		//Скорость
+	int speed;		//РЎРєРѕСЂРѕСЃС‚СЊ
 public:
 	virtual void move() = 0;
 };
 
-class GroundVehicle: public Vehicle {};	// Наземное транспортное средство
+class GroundVehicle: public Vehicle {};	// РќР°Р·РµРјРЅРѕРµ С‚СЂР°РЅСЃРїРѕСЂС‚РЅРѕРµ СЃСЂРµРґСЃС‚РІРѕ
 
 class Car :public GroundVehicle
 {
 public:
 	void move() override
 	{
-		cout << "Машина едет на 4-х колесах" << endl;
+		cout << "РњР°С€РёРЅР° РµРґРµС‚ РЅР° 4-С… РєРѕР»РµСЃР°С…" << endl;
 	}
 };
 
@@ -25,7 +25,7 @@ class Bike:public GroundVehicle
 public:
 	void move() override
 	{
-		cout << "Велосипед едет на 2-х колесах"<<endl;
+		cout << "Р’РµР»РѕСЃРёРїРµРґ РµРґРµС‚ РЅР° 2-С… РєРѕР»РµСЃР°С…"<<endl;
 	}
 };
 
@@ -37,7 +37,7 @@ class Plane : public AirVehicle
 public:
 	void move() override
 	{
-		cout << "Самолет летит на 2-х крыльях"<<endl;
+		cout << "РЎР°РјРѕР»РµС‚ Р»РµС‚РёС‚ РЅР° 2-С… РєСЂС‹Р»СЊСЏС…"<<endl;
 	}
 };
 
@@ -46,7 +46,7 @@ class Helicopter : public AirVehicle
 public:
 	void move() override
 	{
-		cout << "Вертолёт летит на 2-х винтах"<<endl;
+		cout << "Р’РµСЂС‚РѕР»С‘С‚ Р»РµС‚РёС‚ РЅР° 2-С… РІРёРЅС‚Р°С…"<<endl;
 	}
 };
 
@@ -58,7 +58,7 @@ class Ship :public WaterVehicle
 public:
 	void move() override
 	{
-		cout << "Корабль идёт по воде" << endl;
+		cout << "РљРѕСЂР°Р±Р»СЊ РёРґС‘С‚ РїРѕ РІРѕРґРµ" << endl;
 	}
 };
 
@@ -67,7 +67,7 @@ class Submarine : public WaterVehicle
 public:
 	void move() override
 	{
-		cout << "Подводная лодка идёт под водой" << endl;
+		cout << "РџРѕРґРІРѕРґРЅР°СЏ Р»РѕРґРєР° РёРґС‘С‚ РїРѕРґ РІРѕРґРѕР№" << endl;
 	}
 };
 
