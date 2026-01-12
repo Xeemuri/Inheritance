@@ -457,5 +457,12 @@ int main()
 	int n = 0;
 	Human** group = Load("P_418.txt", n);
 	Print(group, n);
+
+	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
+	{
+		//group[i]->info();
+		cout << *group[i] << endl;
+	}
 	return 0;
+
 }
