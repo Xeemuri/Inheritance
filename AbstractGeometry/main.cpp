@@ -1,22 +1,82 @@
 ﻿#include <Windows.h>
+#include<wingdi.h>
 #include <iostream>
 using namespace std;
 
 enum Color
 {
+	Black = 0x00000000,
 	Red = 0x000000FF,	//0x - Hexadecimal
 	Green = 0x0000FF00,
 	Blue = 0x00FF0000,
 	Yellow = 0x0000FFFF,
-	Purple = 0x00800080
+	Purple = 0x00800080,
+	White = 0x00FFFFFF
 };
 
+#define SHAPE_TAKE_PARAMETERS int start_x, int start_y, int line_width, Color color
+#define SHAPE_GIVE_PARAMETERS start_x, start_y, line_width, color
+		
 class Shape
 {
+	static const int MIN_START_X = 100;
+	static const int MIN_START_Y = 100;
+	static const int MAX_START_X = 1000;
+	static const int MAX_START_Y = 700;
+	static const int MIN_LINE_WIDTH = 1;
+	static const int MAX_LINE_WIDTH = 32;
+protected:
 	Color color;
+	int start_x;
+	int start_y;
+	int line_width;
 public:
-	Shape(Color color) : color(color) {}
+	int get_start_x()const
+	{
+		return start_x;
+	}
+	int get_start_y()const
+	{
+		return start_y;
+	}
+	int get_line_sidth()const
+	{
+		return line_width;
+	}
+
+	void set_start_x(int start_x)
+	{
+		if (start_x < MIN_START_X) start_x = MIN_START_X;
+		if (start_x > MAX_START_X) start_x = MAX_START_X;
+		this->start_x = start_x;
+	}
+	void set_start_y(int start_y)
+	{
+		if (start_y < MIN_START_Y) start_y = MIN_START_Y;
+		if (start_y > MAX_START_Y) start_y = MAX_START_Y;
+		this->start_y = start_y;
+	}
+	void set_line_width(int line_width)
+	{
+		if (line_width < MIN_LINE_WIDTH) line_width = MIN_LINE_WIDTH;
+		if (line_width > MAX_LINE_WIDTH)line_width = MAX_LINE_WIDTH;
+		this->line_width = line_width;
+	}
+	double filter_size(double size)
+	{
+		if (size < 20) size = 20;
+		if (size > 800)size = 800;
+		return size;
+	}
+	Shape(SHAPE_TAKE_PARAMETERS) : color(color)
+	{
+		set_start_x(start_x);
+		set_start_y(start_y);
+		set_line_width(line_width);
+	}
 	virtual ~Shape() {}
+
+	
 	virtual double get_area() const = 0;
 	virtual double get_perimeter() const = 0;
 	virtual void draw() const = 0;
@@ -26,20 +86,23 @@ public:
 		cout << "Периметр фигуры: " << get_perimeter() << endl;
 		draw();
 	}
+
+
+
 };
 
 class Square :public Shape
 {
 	double side;
 public:
-	Square(double side, Color color) :Shape(color)
+	Square(double side, SHAPE_TAKE_PARAMETERS) :Shape(SHAPE_GIVE_PARAMETERS)
 	{
-		this->side = side;
+		set_side(side);
 	}
 	~Square() {}
 	void set_side(double side)
 	{
-		this->side = side;
+		this->side = filter_size(side);
 	}
 	double get_side() const
 	{
@@ -63,21 +126,38 @@ public:
 			}
 			cout << endl;
 		}*/
+		/*HANDLE hWnd = GetStdHandle(STD_OUTPUT_HANDLE);
+		COORD bufferSize = { 100,100 };
+		SetConsoleScreenBufferSize(hWnd, bufferSize);*/
 
 		HWND hwnd = GetConsoleWindow(); //1)Получаем окно консоли, чтобы к нему можно было подключаться
 		HDC hdc = GetDC(hwnd); //2)Получаем контекст окна консоли. Контекст - то, на чем мы будем рисовать.
 
 
 		//3) Создаем чем мы будем рисовать
-		HPEN hPen = CreatePen(PS_SOLID, 5, Color::Red); // Карандаш - рисует контур фигуры
-		HBRUSH hBrush = CreateSolidBrush(Color::Red);	//Кисть рисует заливку фигуры
+		HPEN hPen = CreatePen(PS_SOLID, line_width, color); // Карандаш - рисует контур фигуры
+		HBRUSH hBrush = CreateSolidBrush(color);	//Кисть рисует заливку фигуры
 
 		//4) Вышесозданные инструменты нужно выбрать (взять в руки):
 		SelectObject(hdc, hPen);
 		SelectObject(hdc, hBrush);
 
 		//5)Рисуем фигуру:
-		Rectangle(hdc, 300, 300, 500, 500);
+		Rectangle(hdc, start_x, start_y, side + start_x, side + start_y);
+		/*
+		Функция Rectangle() рисует прямоугольник.
+		hdc - это контекст устройства, на котором нужно нарисовать прямоугольник.
+		300, 300 - координаты верхнего левого угла.
+		500, 500 - координаты правого нижнего угла.
+		Все координаты всегда задаются в пикселях!!!
+		Начало координат всегда находятся в левом верхнем углу экрана.
+		--------------> X
+		|
+		|
+		|
+		|
+		V Y
+		*/
 
 
 		//6) Удаляем инструменты, для того чтобы освободить ресурсы, занимаемые этими инструментами:
@@ -94,14 +174,74 @@ public:
 
 };
 
+class Rectangle :public Shape
+{
+	int height;
+	int width;
+public:
+	int get_height() const
+	{
+		return height;
+	}
+	int get_width() const
+	{
+		return width;
+	}
+	void set_height(int height)
+	{
+		this->height = height;
+	}
+	void set_width(int width)
+	{
+		this->width = width;
+	}
+
+	Rectangle(int height, int width, int start_x, int start_y, int line_width, Color color) :Shape(start_x, start_y, line_width, color)
+	{
+		this->height = height;
+		this->width = width;
+	}
+	~Rectangle() {}
+
+	double get_area() const override { return width * height; }
+	double get_perimeter() const override { return 2 * (width + height); }
+
+
+	void draw() const override
+	{
+		HWND hwnd = GetConsoleWindow(); //1)Получаем окно консоли, чтобы к нему можно было подключаться
+		HDC hdc = GetDC(hwnd); //2)Получаем контекст окна консоли. Контекст - то, на чем мы будем рисовать.
+
+
+		//3) Создаем чем мы будем рисовать
+		HPEN hPen = CreatePen(PS_SOLID, 5, color); // Карандаш - рисует контур фигуры
+		HBRUSH hBrush = CreateSolidBrush(color);	//Кисть рисует заливку фигуры
+
+		//4) Вышесозданные инструменты нужно выбрать (взять в руки):
+		SelectObject(hdc, hPen);
+		SelectObject(hdc, hBrush);
+
+		//5)Рисуем фигуру:
+		const int indent = 200;
+		::Rectangle(hdc, indent, indent, width + indent, height + indent);
+
+
+		//6) Удаляем инструменты, для того чтобы освободить ресурсы, занимаемые этими инструментами:
+		DeleteObject(hPen);
+		DeleteObject(hBrush);
+		ReleaseDC(hwnd, hdc);
+	}
+};
 int main()
 {
 	setlocale(LC_ALL, "");
 	//Shape shape = Color::Red;
-	Square square(5, Color::Red);
+	Square square(50000, -300, -300, 1, Color::White);
 	/*cout << "Сторона квадрата: " << square.get_side() << endl;
 	cout << "Площадь фигуры: " << square.get_area() << endl;
 	cout << "Периметр фигуры: " << square.get_perimeter() << endl;
 	square.draw();*/
+	//class Rectangle rect(300, 300, Color::Purple);
 	square.info();
+	//rect.info();
 }
