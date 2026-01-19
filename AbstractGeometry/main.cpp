@@ -66,9 +66,9 @@ public:
 	}
 	double filter_size(double size)
 	{
-		if (size < 20) size = 20;
-		if (size > 800)size = 800;
-		return size;
+		//if (size < 20) size = 20;
+		//if (size > 800)size = 800;
+		return size < 20? size = 20: size > 800? size= 800: size;
 	}
 	Shape(SHAPE_TAKE_PARAMETERS) : color(color)
 	{
@@ -305,6 +305,6 @@ int main()
 	class Rectangle rect(800, 600,100,200,5, Color::Purple);
 	//rect.info();
 
-	Circle circle(3000, 100, 100, 15, Blue);
-	//circle.info();
+	Circle circle(100, 100, 100, 15, Blue);
+	circle.info();
 }
