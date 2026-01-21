@@ -433,11 +433,10 @@ namespace Geometry
 		}
 	};
 
-	class RightTriangle
+	class RightTriangle : public Triangle
 	{
 		double leg1;
 		double leg2;
-		double hyp;
 	public:
 		double get_leg1() const
 		{
@@ -447,15 +446,55 @@ namespace Geometry
 		{
 			return leg2;
 		}
-		double get_hyp()const
+		double get_hyp() const
 		{
-			return hyp;
+			return sqrt(pow(leg1, 2) + pow(leg2, 2));
 		}
-		void triangle_check()
+		void set_leg1(double leg1)
 		{
+			this->leg1 = filter_size(leg1);
 		}
-		void set_leg1() const
+		void set_leg2(double leg2)
 		{
+			this->leg2 = filter_size(leg2);
+		}
+		RightTriangle(double leg1, double leg2, SHAPE_TAKE_PARAMETERS) : Triangle(SHAPE_GIVE_PARAMETERS)
+		{
+			set_leg1(leg1);
+			set_leg2(leg2);
+		}
+		~RightTriangle() {}
+		double get_height() const override
+		{
+			return (leg1 + leg2) / get_hyp();
+		}
+		double get_area() const override
+		{
+			return (leg1 + leg2) / 2;
+		}
+		double get_perimeter() const override
+		{
+			return leg1 + leg2 + get_hyp();
+		}
+		void draw() const override
+		{
+			HWND hwnd = GetConsoleWindow();
+			HDC hdc = GetDC(hwnd);
+			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
+			HBRUSH hBrush = CreateSolidBrush(color);
+
+			SelectObject(hdc, hPen);
+			SelectObject(hdc, hBrush);
+			POINT vertices[] =
+			{
+				{start_x,start_y},
+				{start_x,start_y + leg1},
+				{start_x + leg2,start_y + leg1}
+			};
+			Polygon(hdc, vertices, 3);
+			DeleteObject(hPen);
+			DeleteObject(hBrush);
+			ReleaseDC(hwnd, hdc);
 		}
 	};
 }
@@ -478,5 +517,8 @@ int main()
 	//e_triangle.info();
 
 	Geometry::IsoscelesTriangle i_triangle(200, 300, 300, 200, 3, Geometry::Color::White);
-	i_triangle.info();
+	//i_triangle.info();
+
+	Geometry::RightTriangle r_triangle(200, 300, 300, 200, 3, Geometry::Color::White);
+	r_triangle.info();
 }
