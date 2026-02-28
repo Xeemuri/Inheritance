@@ -1,11 +1,11 @@
 ﻿#define _USE_MATH_DEFINES
 #include <Windows.h>
 #include<wingdi.h>
+#include<d2d1.h>
 #include <iostream>
 using namespace std;
 
 //const double PI = 3.1415926535;
-
 namespace Geometry
 {
 	enum Color
@@ -17,6 +17,39 @@ namespace Geometry
 		Yellow = 0x0000FFFF,
 		Purple = 0x00800080,
 		White = 0x00FFFFFF
+	};
+
+	class DrawingContext
+	{
+		HWND hwnd;
+		HDC hdc;
+		HPEN hPen;
+		HBRUSH hBrush;
+		int line_width;
+		Color color;
+	public:
+		DrawingContext(int line_width, Color color)
+		{
+			hwnd = GetConsoleWindow(); //1)Получаем окно консоли, чтобы к нему можно было подключаться
+			hdc = GetDC(hwnd);//2)Получаем контекст окна консоли. Контекст - то, на чем мы будем рисовать.
+			//3) Создаем чем мы будем рисовать
+			hPen = CreatePen(PS_SOLID, line_width, color);
+			hBrush = CreateSolidBrush(color);
+			//4) Вышесозданные инструменты нужно выбрать (взять в руки):
+			SelectObject(hdc, hPen);
+			SelectObject(hdc, hBrush);
+		}
+		~DrawingContext()
+		{
+			//6) Удаляем инструменты, для того чтобы освободить ресурсы, занимаемые этими инструментами:
+			DeleteObject(hPen);
+			DeleteObject(hBrush);
+			ReleaseDC(hwnd, hdc);
+		}
+		HDC get_hdc()
+		{
+			return hdc;
+		}
 	};
 
 #define SHAPE_TAKE_PARAMETERS int start_x, int start_y, int line_width, Color color
@@ -105,7 +138,6 @@ namespace Geometry
 		}
 
 
-
 	};
 
 	class Square :public Shape
@@ -135,32 +167,8 @@ namespace Geometry
 		}
 		void draw() const override
 		{
-			/*for (int i = 0; i < side; i++)
-			{
-				for (int i = 0; i < side; i++)
-				{
-					cout << "* ";
-				}
-				cout << endl;
-			}*/
-			/*HANDLE hWnd = GetStdHandle(STD_OUTPUT_HANDLE);
-			COORD bufferSize = { 100,100 };
-			SetConsoleScreenBufferSize(hWnd, bufferSize);*/
-
-			HWND hwnd = GetConsoleWindow(); //1)Получаем окно консоли, чтобы к нему можно было подключаться
-			HDC hdc = GetDC(hwnd); //2)Получаем контекст окна консоли. Контекст - то, на чем мы будем рисовать.
-
-
-			//3) Создаем чем мы будем рисовать
-			HPEN hPen = CreatePen(PS_SOLID, line_width, color); // Карандаш - рисует контур фигуры
-			HBRUSH hBrush = CreateSolidBrush(color);	//Кисть рисует заливку фигуры
-
-			//4) Вышесозданные инструменты нужно выбрать (взять в руки):
-			SelectObject(hdc, hPen);
-			SelectObject(hdc, hBrush);
-
-			//5)Рисуем фигуру:
-			::Rectangle(hdc, start_x, start_y, side + start_x, side + start_y);
+			DrawingContext dc(line_width, color);
+			::Rectangle(dc.get_hdc(), start_x, start_y, side + start_x, side + start_y);
 			/*
 			Функция Rectangle() рисует прямоугольник.
 			hdc - это контекст устройства, на котором нужно нарисовать прямоугольник.
@@ -175,12 +183,6 @@ namespace Geometry
 			|
 			V Y
 			*/
-
-
-			//6) Удаляем инструменты, для того чтобы освободить ресурсы, занимаемые этими инструментами:
-			DeleteObject(hPen);
-			DeleteObject(hBrush);
-			ReleaseDC(hwnd, hdc);
 		}
 		void info() const override
 		{
@@ -226,27 +228,10 @@ namespace Geometry
 
 		void draw() const override
 		{
-			HWND hwnd = GetConsoleWindow(); //1)Получаем окно консоли, чтобы к нему можно было подключаться
-			HDC hdc = GetDC(hwnd); //2)Получаем контекст окна консоли. Контекст - то, на чем мы будем рисовать.
-
-
-			//3) Создаем чем мы будем рисовать
-			HPEN hPen = CreatePen(PS_SOLID, line_width, color); // Карандаш - рисует контур фигуры
-			HBRUSH hBrush = CreateSolidBrush(color);	//Кисть рисует заливку фигуры
-
-			//4) Вышесозданные инструменты нужно выбрать (взять в руки):
-			SelectObject(hdc, hPen);
-			SelectObject(hdc, hBrush);
-
-			//5)Рисуем фигуру:
-			::Rectangle(hdc, start_x, start_y, start_x + width, start_y + height);
-
-
-			//6) Удаляем инструменты, для того чтобы освободить ресурсы, занимаемые этими инструментами:
-			DeleteObject(hPen);
-			DeleteObject(hBrush);
-			ReleaseDC(hwnd, hdc);
+			DrawingContext dc(line_width, color);
+			::Rectangle(dc.get_hdc(), start_x, start_y, start_x + width, start_y + height);
 		}
+
 		void info() const override
 		{
 			cout << typeid(*this).name() << endl;
@@ -281,19 +266,8 @@ namespace Geometry
 
 		void draw() const override
 		{
-			HWND hwnd = GetConsoleWindow();
-			HDC hdc = GetDC(hwnd);
-			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
-			HBRUSH hBrush = CreateSolidBrush(color);
-
-			SelectObject(hdc, hPen);
-			SelectObject(hdc, hBrush);
-
-			Ellipse(hdc, start_x, start_y, radius * 2 + start_x, radius * 2 + start_y);
-
-			DeleteObject(hPen);
-			DeleteObject(hBrush);
-			ReleaseDC(hwnd, hdc);
+			DrawingContext dc(line_width, color);
+			Ellipse(dc.get_hdc(), start_x, start_y, radius * 2 + start_x, radius * 2 + start_y);
 		}
 
 		void info() const override
@@ -310,6 +284,11 @@ namespace Geometry
 		Triangle(SHAPE_TAKE_PARAMETERS) : Shape(SHAPE_GIVE_PARAMETERS) {}
 		~Triangle() {}
 		virtual double get_height() const = 0;
+		void info() const override
+		{
+			cout << "Высота треугольника: " << get_height() << endl;
+			Shape::info();
+		}
 	};
 
 	class EquilateralTriangle : public Triangle
@@ -413,23 +392,14 @@ namespace Geometry
 
 		void draw() const override
 		{
-			HWND hwnd = GetConsoleWindow();
-			HDC hdc = GetDC(hwnd);
-			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
-			HBRUSH hBrush = CreateSolidBrush(color);
-
-			SelectObject(hdc, hPen);
-			SelectObject(hdc, hBrush);
+			DrawingContext dc(line_width, color);
 			POINT vertices[] =
 			{
 				{start_x,start_y + get_height()},
 				{start_x + get_base() / 2,start_y},
 				{start_x + get_base(),start_y + get_height()}
 			};
-			Polygon(hdc, vertices, 3);
-			DeleteObject(hPen);
-			DeleteObject(hBrush);
-			ReleaseDC(hwnd, hdc);
+			Polygon(dc.get_hdc(), vertices, 3);
 		}
 	};
 
@@ -466,7 +436,7 @@ namespace Geometry
 		~RightTriangle() {}
 		double get_height() const override
 		{
-			return (leg1 + leg2) / get_hyp();
+			return leg1;
 		}
 		double get_area() const override
 		{
@@ -478,23 +448,30 @@ namespace Geometry
 		}
 		void draw() const override
 		{
-			HWND hwnd = GetConsoleWindow();
-			HDC hdc = GetDC(hwnd);
-			HPEN hPen = CreatePen(PS_SOLID, line_width, color);
-			HBRUSH hBrush = CreateSolidBrush(color);
-
-			SelectObject(hdc, hPen);
-			SelectObject(hdc, hBrush);
+			DrawingContext dc(line_width, color);
 			POINT vertices[] =
 			{
 				{start_x,start_y},
 				{start_x,start_y + leg1},
 				{start_x + leg2,start_y + leg1}
 			};
-			Polygon(hdc, vertices, 3);
-			DeleteObject(hPen);
-			DeleteObject(hBrush);
-			ReleaseDC(hwnd, hdc);
+			Polygon(dc.get_hdc(), vertices, 3);
+
+
+			long double height_x = leg2 * pow(leg1, 2) / (pow(leg1, 2) + pow(leg2, 2));
+			height_x += start_x;
+			long double height_y = pow(leg2, 2) * leg1 / (pow(leg1, 2) + pow(leg2, 2));
+			height_y += start_y;
+			POINT height[] =
+			{
+				{start_x,start_y + leg1},
+				{height_x, height_y},
+			};
+			int complementary = color ^ 0x00FFFFFF;
+			HPEN complyPen = CreatePen(PS_SOLID, line_width, complementary);
+			SelectObject(dc.get_hdc(), complyPen);
+			Polyline(dc.get_hdc(), height,2);
+
 		}
 	};
 }
@@ -519,6 +496,6 @@ int main()
 	Geometry::IsoscelesTriangle i_triangle(200, 300, 300, 200, 3, Geometry::Color::White);
 	//i_triangle.info();
 
-	Geometry::RightTriangle r_triangle(200, 300, 300, 200, 3, Geometry::Color::White);
+	Geometry::RightTriangle r_triangle(200, 400, 300, 200, 3, Geometry::Color::White);
 	r_triangle.info();
 }

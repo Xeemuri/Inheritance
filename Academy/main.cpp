@@ -58,19 +58,19 @@ public:
 		count--;
 		cout << "HDestructor:\t" << this << endl;
 	}
-	virtual std::ostream& info(std::ostream& os) const
+	virtual std::ostream& info(std::ostream& os)const
 	{
+		//return os << last_name << " " << first_name << " " << age;
 		os.width(11);
-		os << std::left;//задаем выравнивание по левому краю
-		os << std::string(typeid(*this).name()+6)+":";
-		os.width(LAST_NAME_WIDTH); //задаем ширину вывода, т.е., сколько знакопозиций будет занимать выводимое значение
+		os << std::left;//задаем выравнивание по левому кураю
+		os << std::string(typeid(*this).name() + 6) + ":";
+		os.width(LAST_NAME_WIDTH);	//задаем ширину вывода, т.е., сколько знакопозиций будет занимать следующее выводимое значение
 		os << last_name;
 		os.width(FIRST_NAME_WIDTH);
 		os << first_name;
 		os.width(AGE_WIDTH);
 		os << age;
 		return os;
-		//return os << last_name << " " << first_name << " " << age;
 	}
 	virtual std::ofstream& write(std::ofstream& ofs) const
 	{
@@ -155,7 +155,7 @@ public:
 		Human::read(ifs);
 		char buffer[SPECIALITY_WIDTH + 1] = {};
 		ifs.read(buffer, SPECIALITY_WIDTH);
-		cout << buffer << endl;
+		//cout << buffer << endl;
 		for (int i = SPECIALITY_WIDTH - 2; buffer[i] == ' '; i--)buffer[i] = 0;
 		while (buffer[0] == ' ')
 			for (int i = 0; buffer[i]; i++)buffer[i] = buffer[i + 1];
@@ -385,10 +385,10 @@ Human** Load(const std::string& filename, int& n)
 			if (buffer.size() == 0)continue;
 			n++;
 		}
-		cout << n << endl;
+		//cout << n << endl;
 		//2) Выделяем память под массив, в который будут сохранятся объекты из файла
-		group = new Human* [0] {};
-
+		group = new Human* [n] {};
+		
 		//3) Возвращаемся в начало файла, для того чтобы загрузить из него сами объекты
 		cout << fin.tellg() << endl;
 		fin.clear();
@@ -396,7 +396,7 @@ Human** Load(const std::string& filename, int& n)
 		cout << fin.tellg() << endl;
 
 		//4) Загружаем объекты из файла
-		for (int i = 0; !fin.eof(); i++) 
+		for (int i = 0; !fin.eof(); i++)
 		{
 			std::getline(fin, buffer, ':');
 			if (buffer.size() == 0)continue;
@@ -404,7 +404,7 @@ Human** Load(const std::string& filename, int& n)
 
 			if (group[i])fin >> *group[i];
 			else i--;
-			cout << fin.tellg() << endl;
+			//cout << fin.tellg() << endl;
 		}
 	}
 	else
@@ -456,13 +456,18 @@ int main()
 #endif // POLYMROPHISM
 	int n = 0;
 	Human** group = Load("P_418.txt", n);
-	Print(group, n);
+	//Print(group, n);
 
-	for (int i = 0; i < sizeof(group) / sizeof(group[0]); i++)
+	for (int i = 0; i < n; i++)
 	{
-		//group[i]->info();
 		cout << *group[i] << endl;
 	}
+
+	for (int i = 0; i < n; i++)
+	{
+		delete group[i];
+	}
+	delete[] group;
 	return 0;
 
 }
